@@ -1,24 +1,34 @@
 package ru.hh.school.entity;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-//TODO: оформите entity
+@Entity
+@Table(name = "employer")
 public class Employer {
 
+  @Id()
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "employer_id")
   private Integer id;
 
+  @Column(name = "company_name", nullable = false, length = 100)
   private String companyName;
 
-  // не используйте java.util.Date
-  // https://docs.jboss.org/hibernate/orm/5.3/userguide/html_single/Hibernate_User_Guide.html#basic-datetime-java8
+  @Column(name = "creation_time")
   private LocalDateTime creationTime;
 
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "employer")
   private List<Vacancy> vacancies = new ArrayList<>();
 
+  @Column(name = "block_time")
   private LocalDateTime blockTime;
+
+  public Employer() {
+  }
 
   public List<Vacancy> getVacancies() {
     return vacancies;
@@ -44,10 +54,6 @@ public class Employer {
     this.blockTime = blockTime;
   }
 
-  // статьи на тему реализации equals() и hashCode():
-  //
-  // https://vladmihalcea.com/hibernate-facts-equals-and-hashcode/
-  // https://docs.jboss.org/hibernate/orm/5.3/userguide/html_single/Hibernate_User_Guide.html#mapping-model-pojo-equalshashcode
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
